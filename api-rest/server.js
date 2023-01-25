@@ -51,7 +51,7 @@ app.post('/login', async (req, res) => {
     else {
         res.json({
             error : 401,
-            status: "El usuario no se ha podido logear"
+            msg: "El usuario no se ha podido logear"
         });
     }
 });
@@ -64,7 +64,7 @@ const authenticateJWT = (req, res, next) => {
             if (err) {
                 return res.json({
                     error : 403,
-                    status: "No tienes los permisos necesarios"
+                    msg: "No tienes los permisos necesarios"
                 });
             }
             req.user = user;
@@ -73,15 +73,17 @@ const authenticateJWT = (req, res, next) => {
     } else {
         res.json({
             error : 401,
-            status: "El usuario no se encuentra logeado"
+            msg: "El usuario no se encuentra logeado"
         });
     }
 };
 
-app.get('/peticion', authenticateJWT, (req, res) => {
+app.post('/calculate', authenticateJWT, (req, res) => {
     // Mandar jwt y la operacion
+    let expression = req.body.operation;
     res.json({
         error : null,
-        msg: "Petición realizada",
+        msg: "Operación recibida",
+        operation: expression
     });
 });
