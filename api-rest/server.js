@@ -1,9 +1,9 @@
 const express = require('express');
 const bp = require('body-parser');
+const cors = require('cors');
+const mydb = require("./bdmongo.js");
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const mydb = require("./bdmongo.js");
-const cors = require('cors');
 
 const app = express();
 var accessToken;
@@ -59,8 +59,8 @@ app.post('/login', async (req, res) => {
 const authenticateJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (authHeader) {
-        const token = authHeader.split(' ')[1];
-        jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+        accessToken = authHeader.split(' ')[1];
+        jwt.verify(accessToken, process.env.TOKEN_SECRET, (err, user) => {
             if (err) {
                 return res.json({
                     error : 403,
@@ -84,6 +84,7 @@ app.post('/calculate', authenticateJWT, (req, res) => {
     res.json({
         error : null,
         msg: "Operación recibida",
-        operation: expression
+        operation: expression,
+        token: accessToken
     });
 });
