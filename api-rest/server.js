@@ -4,6 +4,7 @@ const cors = require('cors');
 const mydb = require("./bdmongo.js");
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+var WebSocket = require("ws");
 
 const app = express();
 var accessToken;
@@ -79,12 +80,28 @@ const authenticateJWT = (req, res, next) => {
 };
 
 app.post('/calculate', authenticateJWT, (req, res) => {
-    // Mandar jwt y la operacion
     let expression = req.body.operation;
-    res.json({
-        error : null,
-        msg: "Operación recibida",
-        operation: expression,
-        token: accessToken
-    });
+    let data = {accessToken, expression}
+    let result;
+
+    let socket = new WebSocket("ws://localhost:8023");
+    socket.onopen = ()=> {
+        socket.send(data.toString());
+    };
+    socket.onmessage = (event)=> {
+        result = JSON.parse(event);
+    };
+    
+    if(result.error==null) {
+        res.json({
+            error : null,
+            msg: "Operación realizada con exito",
+            solution: result.solution
+        });
+    }else {
+        res.json({
+            error : result.error,
+            msg: result.msg
+        });
+    }
 });
