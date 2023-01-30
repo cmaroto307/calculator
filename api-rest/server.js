@@ -80,28 +80,26 @@ const authenticateJWT = (req, res, next) => {
 };
 
 app.post('/calculate', authenticateJWT, (req, res) => {
-    let expression = req.body.operation;
-    let data = {accessToken, expression}
-    let result;
-
+    let data = {token: accessToken, operation: req.body.operation}
     let socket = new WebSocket("ws://localhost:8023");
+    
     socket.onopen = ()=> {
-        socket.send(data.toString());
+        socket.send(JSON.stringify(data));
     };
     socket.onmessage = (event)=> {
-        result = JSON.parse(event);
-    };
+        let result = JSON.parse(event);
     
-    if(result.error==null) {
-        res.json({
-            error : null,
-            msg: "Operación realizada con exito",
-            solution: result.solution
-        });
-    }else {
-        res.json({
-            error : result.error,
-            msg: result.msg
-        });
-    }
+        if(result.error==null) {
+            res.json({
+                error : null,
+                msg: "Operación realizada con exito",
+                solution: result.solution
+            });
+        }else {
+            res.json({
+                error : result.error,
+                msg: result.msg
+            });
+        }
+    };
 });
