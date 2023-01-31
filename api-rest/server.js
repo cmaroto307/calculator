@@ -87,7 +87,7 @@ app.post('/calculate', authenticateJWT, (req, res) => {
         socket.send(JSON.stringify(data));
     };
     socket.onmessage = (event)=> {
-        let result = JSON.parse(event);
+        let result = JSON.parse(event.data);
     
         if(result.error==null) {
             res.json({

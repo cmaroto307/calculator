@@ -79,7 +79,7 @@ function handleCalculateFormSubmit() {
         //console.log(response);
         handleAlertMsg(response);
         if(response.error==null){
-            document.getElementById("operation").innerHTML = response.solution;
+            document.getElementById("operation").value = response.solution;
         }
     });
 }

@@ -4,10 +4,11 @@ require('dotenv').config();
 var parser = require('./gramatica');
 
 var wss = new WebSocketServer({port: 8023});
+var client;
 
 console.log("WebSocketServer started on port 8023");
 
-wss.on('connection', (ws, msg) => {
+wss.broadcast = function broadcastMsg(msg) {
     let data = JSON.parse(msg);
     let result;
     jwt.verify(data.token, process.env.TOKEN_SECRET, (err, user) => {
@@ -18,11 +19,13 @@ wss.on('connection', (ws, msg) => {
             };
         }
         else {
-            result = {
-                error : null,
-                solution : parser.parse(JSON.stringify(data.operation))
-            };
+            result = parser.parse(data.operation);
         }
     });
-    ws.send(JSON.stringify(result));
+    client.send(JSON.stringify(result));
+};
+
+wss.on('connection', function connection(ws) {
+    ws.on('message', wss.broadcast);
+    client = ws;
 });

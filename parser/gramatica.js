@@ -84,11 +84,16 @@ performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* actio
 var $0 = $$.length - 1;
 switch (yystate) {
 case 4:
- console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); 
+    return {
+        error: 401,
+        msg : 'Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column
+    }; 
 break;
 case 5:
-
-		console.log('El valor de la expresión es: ' + $$[$0-1]);
+    return {
+        error : null,
+        solution : ($$[$0-1])
+    };
 	
 break;
 case 6:
@@ -715,7 +720,11 @@ case 10:return 13;
 break;
 case 11:return 5;
 break;
-case 12: console.error('Este es un error léxico: ' + yy_.yytext + ', en la linea: ' + yy_.yylloc.first_line + ', en la columna: ' + yy_.yylloc.first_column); 
+case 12: 
+    return {
+        error: 401,
+        msg : 'Este es un error léxico: ' + yy_.yytext + ', en la linea: ' + yy_.yylloc.first_line + ', en la columna: ' + yy_.yylloc.first_column
+    }; 
 break;
 }
 },
@@ -739,7 +748,10 @@ exports.Parser = gramatica.Parser;
 exports.parse = function () { return gramatica.parse.apply(gramatica, arguments); };
 exports.main = function commonjsMain (args) {
     if (!args[1]) {
-        console.log('Usage: '+args[0]+' FILE');
+        return {
+            error: 401,
+            msg : 'Usage: '+args[0]+' FILE'
+        }; 
         process.exit(1);
     }
     var source = require('fs').readFileSync(require('path').normalize(args[1]), "utf8");
