@@ -1,10 +1,11 @@
 var WebSocketServer = require("ws").Server;
+const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 var parser = require('./gramatica');
 
 var wss = new WebSocketServer({port: 8023});
-var client;
+var clients = [];
 
 console.log("WebSocketServer started on port 8023");
 
@@ -14,6 +15,7 @@ wss.broadcast = function broadcastMsg(msg) {
     jwt.verify(data.token, process.env.TOKEN_SECRET, (err, user) => {
         if (err) {
             result = {
+                id : 0,
                 error : 403,
                 msg: "No tienes los permisos necesarios"
             };
@@ -22,10 +24,19 @@ wss.broadcast = function broadcastMsg(msg) {
             result = parser.parse(data.operation);
         }
     });
-    client.send(JSON.stringify(result));
+    let client = clients.find(item => item.id == data.id);
+    client.socket.send(JSON.stringify(result));
 };
 
 wss.on('connection', function connection(ws) {
     ws.on('message', wss.broadcast);
-    client = ws;
+    let id = uuidv4();
+    clients.push({
+        id : id,
+        socket : ws
+    });
+    let result = {
+        id : id
+    };
+    ws.send(JSON.stringify(result));
 });

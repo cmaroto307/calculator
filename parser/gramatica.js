@@ -85,12 +85,14 @@ var $0 = $$.length - 1;
 switch (yystate) {
 case 4:
     return {
+        id : 0,
         error: 401,
         msg : 'Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column
     }; 
 break;
 case 5:
     return {
+        id : 0,
         error : null,
         solution : ($$[$0-1])
     };
@@ -722,6 +724,7 @@ case 11:return 5;
 break;
 case 12: 
     return {
+        id : 0,
         error: 401,
         msg : 'Este es un error léxico: ' + yy_.yytext + ', en la linea: ' + yy_.yylloc.first_line + ', en la columna: ' + yy_.yylloc.first_column
     }; 
@@ -749,6 +752,7 @@ exports.parse = function () { return gramatica.parse.apply(gramatica, arguments)
 exports.main = function commonjsMain (args) {
     if (!args[1]) {
         return {
+            id : 0,
             error: 401,
             msg : 'Usage: '+args[0]+' FILE'
         }; 
