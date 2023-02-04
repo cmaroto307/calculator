@@ -26,6 +26,9 @@ wss.broadcast = function broadcastMsg(msg) {
     });
     let client = clients.find(item => item.id == data.id);
     client.socket.send(JSON.stringify(result));
+    client.socket.close();
+    let indexOf = clients.findIndex(object => object.id == client.id);
+    clients.splice(indexOf, 1);
 };
 
 wss.on('connection', function connection(ws) {
