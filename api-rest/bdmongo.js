@@ -4,12 +4,20 @@ const bcrypt = require("bcryptjs");
 let uri = "mongodb://root:root@localhost:1888/?authMechanism=DEFAULT";
 const client = new MongoClient(uri);
 
+function userValid(email, password) {
+    let valid = true;
+    if(email == "" || password == "") {
+        valid = false;
+    }
+    return valid;
+}
+
 async function addUser(email, password){
     let result = false;
     try {
         client.connect();
         let numUser = await client.db('auth').collection('user').countDocuments({"email":email});
-        if (numUser==0){
+        if (numUser==0 && userValid(email, password)){
             let new_password = bcrypt.hashSync(password, 10);
             client.db('auth').collection('user').insertOne({"email":email, "password":new_password});
             result = true;
