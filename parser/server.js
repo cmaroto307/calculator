@@ -9,6 +9,19 @@ var clients = [];
 
 console.log("WebSocketServer started on port 8023");
 
+wss.on('connection', function connection(ws) {
+    ws.on('message', wss.broadcast);
+    let id = uuidv4();
+    clients.push({
+        id : id,
+        socket : ws
+    });
+    let result = {
+        id : id
+    };
+    ws.send(JSON.stringify(result));
+});
+
 wss.broadcast = function broadcastMsg(msg) {
     let data = JSON.parse(msg);
     let result;
@@ -30,16 +43,3 @@ wss.broadcast = function broadcastMsg(msg) {
     let indexOf = clients.findIndex(object => object.id == client.id);
     clients.splice(indexOf, 1);
 };
-
-wss.on('connection', function connection(ws) {
-    ws.on('message', wss.broadcast);
-    let id = uuidv4();
-    clients.push({
-        id : id,
-        socket : ws
-    });
-    let result = {
-        id : id
-    };
-    ws.send(JSON.stringify(result));
-});
