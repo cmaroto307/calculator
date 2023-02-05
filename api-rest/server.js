@@ -15,7 +15,7 @@ app.use(bp.urlencoded({ extended: true }));
 var corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200
-  }
+}
 app.use(cors(corsOptions));
 
 app.listen(3000, () => {
