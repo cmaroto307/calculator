@@ -2,7 +2,7 @@ require('dotenv').config();
 const {MongoClient} = require('mongodb');
 const bcrypt = require("bcryptjs");
 
-let uri = "mongodb://"+process.env.BD_USER+":"+process.env.BD_PASSWORD+"@my-mongo:1888/?authMechanism=DEFAULT";
+let uri = "mongodb://"+process.env.BD_USER+":"+process.env.BD_PASSWORD+"@my-mongo:27017/?authMechanism=DEFAULT";
 const client = new MongoClient(uri);
 
 function userValid(email, password) {
