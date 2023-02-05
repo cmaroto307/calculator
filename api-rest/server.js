@@ -80,7 +80,7 @@ const authenticateJWT = (req, res, next) => {
 };
 
 app.post('/calculate', authenticateJWT, (req, res) => {
-    let socket = new WebSocket("ws://localhost:8023");
+    let socket = new WebSocket("ws://my-parser:8023");
     
     socket.onopen = ()=> {};
     socket.onmessage = (event)=> {
