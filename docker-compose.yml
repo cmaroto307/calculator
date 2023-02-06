@@ -1,0 +1,40 @@
+version: "3.7"
+
+services:
+  my-mongo:
+    image: mongo:latest
+    container_name: my-mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - "1888:27017"
+    networks:
+      - calculator-net
+    
+  my-api-rest:
+    build:
+      context: ./api-rest/
+      dockerfile: Dockerfile
+    image: cmaroto307/nodejs-api-rest
+    container_name: my-api-rest
+    ports:
+      - "3000:3000"
+    networks:
+      - calculator-net  
+    
+  my-parser:
+    build:
+      context: ./parser/
+      dockerfile: Dockerfile
+    image: cmaroto307/nodejs-parser
+    container_name: my-parser
+    ports:
+      - "8023:8023"
+    networks:
+      - calculator-net  
+
+networks:
+  calculator-net:
+    driver: bridge
